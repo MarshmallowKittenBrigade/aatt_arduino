@@ -4,10 +4,10 @@
 	@date 9/24/2013
 */
 
-#include "Arduino.h"
-#include "Ethernet.h"
-#include "SPI.h"
-#include "Aatt.h"
+#include <Arduino.h>
+#include <Ethernet.h>
+#include <SPI.h>
+#include <Aatt.h>
 
 Aatt::Aatt() {
 

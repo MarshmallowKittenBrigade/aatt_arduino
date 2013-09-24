@@ -6,28 +6,28 @@
 #ifndef Aatt_h
 #define Aatt_h
 
-#include "Arduino.h"
-#include "Ethernet.h"
-#include "SPI.h"
+#include <Arduino.h>
+#include <Ethernet.h>
+#include <SPI.h>
 
 class Aatt {
 	
 	public:
 		Aatt();
-		setSyncUrl(String url, int port);
-		setAccount(string account,String key);
-		setDevice(int device_id);
-		setAct(String act);
-		record(int endpoint, String value);
-		check(int endpoint, int attribute);
-		send();
+		void setSyncUrl(String url, int port);
+		void setAccount(String account,String key);
+		void setDevice(int device_id);
+		void setAct(String act);
+		void record(int endpoint, String value);
+		void check(int endpoint, int attribute);
+		String send();
 	private:
-		compile();
+		void compile();
 		String _url;
-		String _port;
+		int _port;
 		String _account;
 		String _key;
-		String _device_id;
+		int _device_id;
 		String _act;
 };
 
