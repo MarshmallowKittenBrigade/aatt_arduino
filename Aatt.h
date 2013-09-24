@@ -28,7 +28,10 @@ class Aatt {
 		String _account;
 		String _key;
 		int _device_id;
+		String _device;
 		String _act;
+		String _payload;
+		String _data;
 };
 
 #endif
