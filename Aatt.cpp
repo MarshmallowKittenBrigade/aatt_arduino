@@ -29,25 +29,16 @@ void Aatt::setSyncUrl(String url, int port) {
 void Aatt::setAccount(String account, String key) {
 	_account = account;
 	_key = key;
-	_auth += '"APP":"aatt_arduino",';
-	_auth += '"ACCOUNT":"';
-	_auth += _account;
-	_auth += '","KEY":"';
-	_auth += _key;
-	_auth += '"';
+	_auth += '"APP":"aatt_arduino","ACCOUNT":"' + _account + '","KEY":"' + _key + '"';
 }
 
 void Aatt::setDevice(int device_id) {
 	_device_id = device_id;
-	_data += '"DEVICE":"';
-	_data += _device_id;
-	_data += '"';
+	_data += '"DEVICE":"' +_device_id + '"';
 }
 
 void Aatt::setAct(String act) {
-	_act = '"ACT":"';
-	_act += act;
-	_act += '"';
+	_act = '"ACT":"' + act + '"';
 
 	if(strcmp(act, "RECORD")) {
 		_data += ',"RECORDS:{';
@@ -57,11 +48,7 @@ void Aatt::setAct(String act) {
 }
 
 void Aatt::record(int endpoint, String value) {
-	_data += '"';
-	_data += endpoint;
-	_data += '":"';
-	_data += value;
-	_data += '",';
+	_data += '"' + endpoint + '":"' + value + '",';
 }
 
 void Aatt::check(int endpoint, int attribute) {
@@ -70,18 +57,10 @@ void Aatt::check(int endpoint, int attribute) {
 
 void Aatt::compile() {
 
-	_data = _data.substring(0, inString.length() - 1);
+	_data = _data.substring(0, )data.length() - 1);
 	_data += '}';
 
-	_payload = '{';
-	_payload += '"AUTH":{';
-	_payload += _auth;
-	_payload += '},';
-	_payload += _act;
-	_payload += ',';
-	_payload += '"DATA:{';
-	_payload += _data;
-	_payload += '}';
+	_payload = '{"AUTH":{' + _auth + '},' + _act + ',"DATA:{' + _data + '}';
 
 }
 
