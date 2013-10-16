@@ -8,62 +8,62 @@
 #include <Ethernet.h>
 #include <SPI.h>
 #include <Aatt.h>
+#include <aJSON.h>
 
 Aatt::Aatt() {
-	String _url;
+	const char* _url;
 	int _port;
-	String _account;
-	String _key;
-	int _device_id;
-	String _device;
-	String _act;
-	String _payload;
-	String _data;
+	const char* _act;
+	const char* action;
+	aJsonObject* _payload = aJson.createObject();
+	aJsonObject* _auth = aJson.createObject();
+	aJsonObject* _data = aJson.createObject();
+	aJsonObject* _records = aJson.createObject();
+	aJsonObject* _checks = aJson.createObject();
 }
 
-void Aatt::setSyncUrl(String url, int port) {
+void Aatt::setSyncUrl(const char* url, int port) {
 	_url = url;
 	_port = port;
 }
 
-void Aatt::setAccount(String account, String key) {
-	_account = account;
-	_key = key;
-	_auth += '"APP":"aatt_arduino","ACCOUNT":"' + _account + '","KEY":"' + _key + '"';
+void Aatt::setAccount(const char* account, const char* key) {
+	aJson.addStringToObject(_auth,"APP","aatt_arduino");
+	aJson.addStringToObject(_auth,"ACCOUNT",account);
+	aJson.addStringToObject(_auth,"KEY",key);
 }
 
-void Aatt::setDevice(int device_id) {
-	_device_id = device_id;
-	_data += '"DEVICE":"' +_device_id + '"';
+void Aatt::setDevice(const char* device_id) {
+	aJson.addStringToObject(_data,"DEVICE",device_id);
 }
 
-void Aatt::setAct(String act) {
-	_act = '"ACT":"' + act + '"';
-
-	if(strcmp(act, "RECORD")) {
-		_data += ',"RECORDS:{';
-	}else if (strcmp(act, "CHECK")) {
-		_data += ',"CHECKS:{';
-	}
+void Aatt::setAct(const char* act) {
+	action = act;
+	aJson.addStringToObject(_payload,"ACT", act);
 }
 
-void Aatt::record(int endpoint, String value) {
-	_data += '"' + endpoint + '":"' + value + '",';
+void Aatt::record(const char* endpoint, const char* value) {
+	aJson.addStringToObject(_records,endpoint,value);
 }
 
-void Aatt::check(int endpoint, int attribute) {
-
+void Aatt::check(const char* endpoint, const char* attribute) {
+	aJson.addStringToObject(_checks,endpoint,attribute);
 }
 
 void Aatt::compile() {
 
-	_data = _data.substring(0, )data.length() - 1);
-	_data += '}';
+	if(strcmp(action,"RECORD") == 0){
+		aJson.addItemToObject(_data,"RECORDS",_records);
+	}else if(strcmp(action,"CHECK") == 0){
+		aJson.addItemToObject(_data,"CHECKS",_checks);
+	}
 
-	_payload = '{"AUTH":{' + _auth + '},' + _act + ',"DATA:{' + _data + '}';
+	aJson.addItemToObject(_payload,"AUTH",_auth);
+	aJson.addItemToObject(_payload,"DATA",_data);
 
 }
 
-String Aatt::send(){
-	return _payload;
+char* Aatt::send(){
+	this->compile();
+	return Json.print(_payload);
 }

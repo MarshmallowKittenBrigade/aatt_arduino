@@ -9,29 +9,29 @@
 #include <Arduino.h>
 #include <Ethernet.h>
 #include <SPI.h>
+#include <aJSON.h>
 
 class Aatt {
 	
 	public:
 		Aatt();
-		void setSyncUrl(String url, int port);
-		void setAccount(String account,String key);
-		void setDevice(int device_id);
-		void setAct(String act);
-		void record(int endpoint, String value);
-		void check(int endpoint, int attribute);
-		String send();
+		void setSyncUrl(const char* url, int port);
+		void setAccount(const char* account,const char* key);
+		void setDevice(const char* device_id);
+		void setAct(const char* act);
+		void record(const char* endpoint, const char* value);
+		void check(const char* endpoint, const char* attribute);
+		char* send();
 	private:
 		void compile();
-		String _url;
+		const char* _url;
 		int _port;
-		String _account;
-		String _key;
-		int _device_id;
-		String _device;
-		String _act;
-		String _payload;
-		String _data;
+		const char* action;
+		aJsonObject* _payload;
+		aJsonObject* _auth;
+		aJsonObject* _data;
+		aJsonObject* _records;
+		aJsonObject* _checks;
 };
 
 #endif
