@@ -21,17 +21,14 @@ class Aatt {
 		void setAct(const char* act);
 		void record(const char* endpoint, const char* value);
 		void check(const char* endpoint, const char* attribute);
-		char* send();
+		char* getPayload();
+		void send();
 	private:
-		void compile();
 		const char* _url;
 		int _port;
-		const char* action;
-		aJsonObject* _payload;
-		aJsonObject* _auth;
-		aJsonObject* _data;
-		aJsonObject* _records;
-		aJsonObject* _checks;
+		aJsonObject* payload;
+		aJsonObject* records;
+		aJsonObject* checks;
 };
 
 #endif

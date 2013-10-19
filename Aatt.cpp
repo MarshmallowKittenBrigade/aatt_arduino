@@ -10,16 +10,21 @@
 #include <Aatt.h>
 #include <aJSON.h>
 
+//aJsonStream serial_stream(&Serial);
+aJsonObject *payload;
+aJsonObject *auth;
+aJsonObject *data;
+aJsonObject *records;
+aJsonObject *checks;
+
 Aatt::Aatt() {
 	const char* _url;
 	int _port;
-	const char* _act;
-	const char* action;
-	aJsonObject* _payload = aJson.createObject();
-	aJsonObject* _auth = aJson.createObject();
-	aJsonObject* _data = aJson.createObject();
-	aJsonObject* _records = aJson.createObject();
-	aJsonObject* _checks = aJson.createObject();
+	payload = aJson.createObject();
+	aJson.addItemToObject(payload,"AUTH",auth = aJson.createObject());
+	aJson.addItemToObject(payload,"DATA",data = aJson.createObject());
+	records = aJson.createObject();
+	checks = aJson.createObject();
 }
 
 void Aatt::setSyncUrl(const char* url, int port) {
@@ -28,42 +33,36 @@ void Aatt::setSyncUrl(const char* url, int port) {
 }
 
 void Aatt::setAccount(const char* account, const char* key) {
-	aJson.addStringToObject(_auth,"APP","aatt_arduino");
-	aJson.addStringToObject(_auth,"ACCOUNT",account);
-	aJson.addStringToObject(_auth,"KEY",key);
+	aJson.addStringToObject(auth,"APP","aatt_arduino");
+	aJson.addStringToObject(auth,"ACCOUNT",account);
+	aJson.addStringToObject(auth,"KEY",key);
 }
 
 void Aatt::setDevice(const char* device_id) {
-	aJson.addStringToObject(_data,"DEVICE",device_id);
+	aJson.addStringToObject(data,"DEVICE",device_id);
 }
 
 void Aatt::setAct(const char* act) {
-	action = act;
-	aJson.addStringToObject(_payload,"ACT", act);
+	aJson.addStringToObject(payload,"ACT", act);
+	if(strcmp(act,"RECORD") == 0){
+		aJson.addItemToObject(data,"RECORDS",records);
+	}else if(strcmp(act,"CHECK") == 0){
+		aJson.addItemToObject(data,"CHECKS",records);
+	}
 }
 
 void Aatt::record(const char* endpoint, const char* value) {
-	aJson.addStringToObject(_records,endpoint,value);
+	aJson.addStringToObject(records,endpoint,value);
 }
 
 void Aatt::check(const char* endpoint, const char* attribute) {
-	aJson.addStringToObject(_checks,endpoint,attribute);
+	aJson.addStringToObject(checks,endpoint,attribute);
 }
 
-void Aatt::compile() {
-
-	if(strcmp(action,"RECORD") == 0){
-		aJson.addItemToObject(_data,"RECORDS",_records);
-	}else if(strcmp(action,"CHECK") == 0){
-		aJson.addItemToObject(_data,"CHECKS",_checks);
-	}
-
-	aJson.addItemToObject(_payload,"AUTH",_auth);
-	aJson.addItemToObject(_payload,"DATA",_data);
-
+char* Aatt::getPayload(){
+	return aJson.print(payload);
 }
 
-char* Aatt::send(){
-	this->compile();
-	return Json.print(_payload);
+void Aatt::send(){
+	//Do stuff
 }
